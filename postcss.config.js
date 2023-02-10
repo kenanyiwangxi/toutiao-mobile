@@ -19,9 +19,10 @@ module.exports = {
       // 设计稿都是基于物理像素 750 宽设计的
       // 如果设置成75，那么我们可以在设计稿中测量多少就写多少，但是 Vant的样式就会变得很小，小了一半
       // 所以我们还必须设置为 37.5，但是在测量设计稿的时候我们必须让你的测量单位 / 2
-      rootValue ({ file }) {
+      rootValue({ file }) {
         return file.indexOf('vant') !== -1 ? 37.5 : 75
       },
+      // rootValue: 37.5,
       // 需要转换的 CSS 属性，* 就是所有属性都要转换
       propList: ['*']
     }
