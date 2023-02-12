@@ -54,7 +54,7 @@
 
 <script>
 import MyHeader from '@/components/MyHeader.vue'
-import { login, sendMsg } from '@/api/user'
+import { loginAPI, sendMsgAPI } from '@/api/user'
 import { mapMutations } from 'vuex'
 // import { Toast } from 'vant'
 
@@ -108,7 +108,7 @@ export default {
       // 2.封装请求方法
       // 3.请求调用登录
       try {
-        const { data: { data } } = await login(this.user)
+        const { data: { data } } = await loginAPI(this.user)
         // 4.处理响应结果
         this.$toast.success('登录成功')
         // 5.将后端返回的用户登录状态(token等数据)放到Vuex容器中
@@ -135,14 +135,13 @@ export default {
       // 校验手机号码
       // 验证通过 --> 请求发送验证码 --> 用户接收短信 --> 输入验证码 --> 请求登录
       // 请求发送验证码 --> 显示倒计时
-      this.isSendMsg = true
       try {
         // 校验手机号码
         await this.$refs['login-form'].validate('mobile')
         // 验证通过，请求发送验证码
         // loading 状态，1.给用户反馈 2.防止网络慢用户多次点击触发发送行为
         this.isLoadingShow = true
-        await sendMsg(this.user.mobile)
+        await sendMsgAPI(this.user.mobile)
         // 显示倒计时
         this.isCountDownShow = true
       } catch (error) {

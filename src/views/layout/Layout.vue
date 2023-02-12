@@ -1,7 +1,9 @@
 <template>
   <div class="layout-container">
     <!-- 子路由出口 -->
-    <router-view/>
+    <keep-alive include="Home">
+      <router-view/>
+    </keep-alive>
     <!-- 底部导航栏 -->
     <van-tabbar route active-color="#fc6627">
       <van-tabbar-item :to="{name:'Home'}" icon="home-o">首页</van-tabbar-item>

@@ -79,7 +79,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import { getCurrentUser } from '@/api/user'
+import { getCurrentUserAPI } from '@/api/user'
 
 export default {
   name: 'User',
@@ -110,7 +110,7 @@ export default {
       this.setUser(null)
     },
     async loadCurrentUser() {
-      const { data: { data } } = await getCurrentUser()
+      const { data: { data } } = await getCurrentUserAPI()
       this.currentUser = data
     }
   },
