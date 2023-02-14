@@ -36,6 +36,18 @@ const routes = [
         component: () => import('@/views/user/User.vue')
       }
     ]
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/views/search/Search.vue')
+  },
+  {
+    path: '/article/:articleId',
+    name: 'Article',
+    component: () => import('@/views/article/Article.vue'),
+    // 将动态路由参数映射到组件的 props 中，无论是访问还是维护都很方便
+    props: true
   }
 ]
 

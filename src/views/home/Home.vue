@@ -3,7 +3,7 @@
     <!-- 导航栏开始部分 -->
     <van-nav-bar :border="false" fixed placeholder class="nav-bar">
       <template #title>
-        <van-button round icon="search" size="small" class="search-btn">
+        <van-button round icon="search" size="small" class="search-btn" to="/search">
           搜索
         </van-button>
       </template>
@@ -61,7 +61,7 @@ export default {
     return {
       active: 0, // 控制被激活标签
       userChannels: [], // 频道列表
-      isChannelEditShow: true // 控制弹出层状态
+      isChannelEditShow: false // 控制弹出层状态
     }
   },
   computed: {

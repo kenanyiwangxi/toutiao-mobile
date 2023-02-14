@@ -1,6 +1,14 @@
 <template>
   <div>
-    <van-cell>
+    <van-cell
+      border
+      :to="{
+        name: 'Article',
+        params: {
+          articleId:item.art_id
+        }
+      }"
+    >
       <template #title>
         <div class="title-box">
           <!-- 文章标题 -->
@@ -17,9 +25,9 @@
         <div class="label-box">
                 <span>{{ item.aut_name }} &nbsp;&nbsp; {{
                     item.comm_count
-                  }}评论 &nbsp;&nbsp; {{ item.pubdate | dateFormat }}</span>
+                  }}评论 &nbsp;&nbsp; {{ item.pubdate | relativeTime }}</span>
           <!-- 关闭按钮 -->
-          <van-icon name="cross" @click.stop="show = true"/>
+          <van-icon v-if="!isDelete" name="cross" @click.stop="show = true"/>
         </div>
       </template>
     </van-cell>
@@ -69,7 +77,7 @@ import { dislikeArticleAPI, reportArticleAPI } from '@/api/article'
 
 export default {
   name: 'ArtItem',
-  props: ['item'],
+  props: ['item', 'isDelete'],
   data() {
     return {
       show: false, // 控制反馈滑块状态
@@ -200,6 +208,10 @@ export default {
     padding: 24px;
     border-radius: 10px;
   }
+}
+
+.van-cell--borderless::after, .van-cell:last-child::after {
+  display: block;
 }
 
 </style>

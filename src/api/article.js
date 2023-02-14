@@ -32,3 +32,49 @@ export const reportArticleAPI = data => {
     data
   })
 }
+
+// 获取文章详情
+export const getArticleDetailsAPI = articleId => {
+  return request({
+    method: 'GET',
+    url: `/v1_0/articles/${articleId}`
+  })
+}
+
+// 对文章点赞
+export const addLikingsAPI = articleId => {
+  return request({
+    method: 'POST',
+    url: '/v1_0/article/likings',
+    data: {
+      target: articleId
+    }
+  })
+}
+
+// 取消对文章点赞
+export const deleteLikingsAPI = articleId => {
+  return request({
+    method: 'DELETE',
+    url: `/v1_0/article/likings/${articleId}`
+  })
+}
+
+// 对文章收藏
+export const addCollectionAPI = articleId => {
+  return request({
+    method: 'POST',
+    url: '/v1_0/article/collections',
+    data: {
+      target: articleId
+    }
+  })
+}
+
+// 取消对文章收藏
+export const deleteCollectionAPI = articleId => {
+  return request({
+    method: 'DELETE',
+    url: `/v1_0/article/collections/${articleId}`
+  })
+}

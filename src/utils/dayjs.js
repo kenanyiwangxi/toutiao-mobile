@@ -10,10 +10,15 @@ dayjs.extend(relativeTime)
 // 配置中文语言包
 dayjs.locale(zh)
 
-// 定义格式化时间的全局过滤器
-Vue.filter('dateFormat', dt => {
+// 定义计算相对时间时间的全局过滤器
+Vue.filter('relativeTime', dt => {
   // dt 参数是文章发表时间
   // 调用dayjs() 得到当前的时间
   // .to() 方法的返回值,是计算出来的"相对时间"
   return dayjs(dt).from(dayjs())
+})
+
+// 定义时间格式化的全局过滤器
+Vue.filter('formatTime', (dt, format = 'YYYY-MM-DD HH:mm:ss') => {
+  return dayjs(dt).format(format)
 })
