@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
-    <MyHeader/>
+    <van-nav-bar fixed :border="false" left-arrow placeholder
+                 @click-left="$router.push($route.query.redirect || '/')"/>
     <div class="login-wrapper">
       <p class="title">短信登录</p>
       <div class="form">
@@ -53,20 +54,16 @@
 </template>
 
 <script>
-import MyHeader from '@/components/MyHeader.vue'
 import { loginAPI, sendMsgAPI } from '@/api/user'
 import { mapMutations } from 'vuex'
 // import { Toast } from 'vant'
 
 export default {
   name: 'Login',
-  components: {
-    MyHeader
-  },
   data() {
     return {
       user: {
-        mobile: '13411111111', // 手机号
+        mobile: '', // 手机号
         code: '' // 验证码
       },
       formRules: {
@@ -113,8 +110,14 @@ export default {
         this.$toast.success('登录成功')
         // 5.将后端返回的用户登录状态(token等数据)放到Vuex容器中
         this.setUser(data)
-        // 6.跳转我的页面
-        this.$router.replace('/user')
+
+        // 清除layout的缓存,让它重新渲染
+        this.$store.commit('removeCachePage', 'Layout')
+
+        // 跳转回原页面
+        // this.$router.back()
+        // 先用这种方式，但是不太好，有问题
+        this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {
         this.$toast.fail('登录失败\n手机号或验证码错误')
       }
@@ -174,6 +177,11 @@ export default {
 .login-container {
   height: 100vh;
   position: relative;
+
+  /deep/ .van-nav-bar .van-icon {
+    color: #999;
+    font-size: 36px;
+  }
 
   .login-wrapper {
     padding: 0 60px;

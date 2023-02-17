@@ -2,9 +2,15 @@ import axios from 'axios'
 // 在非组件模块中获取 store 必须通过这种方式
 // 这里单独加载申通喏，和在组件中 this.$store 是一个东西
 import store from '@/store'
-
+import { Toast } from 'vant'
+import router from '@/router'
 // 解决后端返回数据中的大数字问题
 // import jsonBig from 'json-bigint'
+
+// 刷新用户token请求
+const refreshTokenReq = axios.create({
+  baseURL: 'http://toutiao.itheima.net'
+})
 
 const request = axios.create({
   // 基础路径
@@ -42,6 +48,68 @@ request.interceptors.request.use((config) => {
 }, (error) => {
   return Promise.reject(error)
 })
+
 // 响应拦截器
+request.interceptors.response.use(function(response) {
+  // 响应成功进入这里
+  return response
+}, async function(error) {
+  // 请求响应失败进入这里
+  // 超过2xx的状态码都会进入这里
+  const status = error.response.status
+  if (status === 400) {
+    // 客户端请求参数错误
+    Toast.fail('客户端请求参数异常')
+  } else if (status === 401) {
+    // token 无效
+    // 如果没有 user 或 user.token 直接去登录
+    const { user } = store.state
+    if (!user || !user.token) {
+      // 直接跳转登录页面
+      return redirectLogin()
+    }
+    // 如果有 refresh_token,则请求获取新的 token
+    try {
+      const { data: { data } } = await refreshTokenReq({
+        method: 'PUT',
+        url: '/v1_0/authorizations',
+        headers: {
+          Authorization: `Bearer ${user.refresh_token}`
+        }
+      })
+      //  拿到新的 token 之后把它更新到容器中
+      user.token = data.token
+      store.commit('setUser', user)
+
+      // 把失败的请求重新发出去
+      // error.config 是本次请求的相关配置信息对象
+      // 这里使用 request 发请求，它会走自己的拦截器
+      // 它的请求拦截器中通过 store 容器访问 token 数据
+      return request(error.config)
+    } catch (err) {
+      // 刷新失败跳转回登录页面
+      redirectLogin()
+    }
+  } else if (status === 403) {
+    // 没有权限操作
+    Toast.fail('没有权限操作')
+  } else if (status >= 500) {
+    // 服务端异常
+    Toast.fail('服务端异常，请稍后重试')
+  }
+  return Promise.reject(error)
+})
+
+function redirectLogin() {
+  router.replace({
+    name: 'Login',
+    // 传递查询参数,查询参数会以 ？ 作为分隔符放到url后面
+    query: {
+      // 数据名是随便起的
+      // router.currentRoute 和我们在组件中获取的this.$route是一个东西
+      redirect: router.currentRoute.fullPath
+    }
+  })
+}
 
 export default request

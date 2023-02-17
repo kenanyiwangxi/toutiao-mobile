@@ -55,3 +55,29 @@ export const deleteFollowPI = target => {
     url: `/v1_0/user/followings/${target}`
   })
 }
+
+// 获取用户信息
+export const getUserProfileAPI = () => {
+  return request({
+    method: 'GET',
+    url: '/v1_0/user/profile'
+  })
+}
+
+// 编辑用户个人资料
+export const updateUserProfileAPI = data => {
+  return request({
+    method: 'PATCH',
+    url: '/v1_0/user/profile',
+    data
+  })
+}
+
+// 修改用户头像
+export const updateUserPhotoAPI = data => {
+  return request({
+    method: 'PATCH',
+    url: '/v1_0/user/photo',
+    data
+  })
+}

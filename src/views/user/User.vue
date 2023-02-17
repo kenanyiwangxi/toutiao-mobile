@@ -7,7 +7,7 @@
         value="个人信息"
         center
         is-link
-        to="/"
+        to="/user/profile"
       >
         <template #icon>
           <van-image
@@ -51,7 +51,12 @@
     </van-cell-group>
     <!-- 未登录状态头部显示 -->
     <div v-else class="not-login">
-      <div class="not-wrapper" @click="$router.push('/login')">
+      <div class="not-wrapper" @click="$router.push({
+        name: 'Login',
+        query: {
+          redirect: '/user'
+        }
+      })">
         <div class="not-box">
           <i class="toutiao toutiao-shouji1"></i>
         </div>
@@ -68,7 +73,12 @@
       <span class="title">更多服务</span>
       <van-grid :icon-size="26" :border="false">
         <van-grid-item icon-prefix="toutiao" icon="tubiaozhuanqu-24" text="用户反馈"/>
-        <van-grid-item icon-prefix="toutiao" icon="kefu" text="小智同学"/>
+        <van-grid-item
+          icon-prefix="toutiao"
+          icon="kefu"
+          text="小智同学"
+          to="/user/chat"
+        />
       </van-grid>
     </div>
     <div class="btn" v-if="user">
@@ -101,17 +111,22 @@ export default {
     async onLogout() {
       // 提示用户确认退出
       // 确认 --> 处理退出
-      await this.$dialog.confirm({
-        title: '退户确认',
-        message: '退出当前头条账号,将不能同步收藏、发布、评论和云端分析等',
-        confirmButtonColor: '#fc6627'
-      })
-      // 清楚用户登录状态
-      this.setUser(null)
+      try {
+        await this.$dialog.confirm({
+          title: '退户确认',
+          message: '退出当前头条账号,将不能同步收藏、发布、评论和云端分析等',
+          confirmButtonColor: '#fc6627'
+        })
+        // 清楚用户登录状态
+        this.setUser(null)
+      } catch (e) {
+      }
     },
     async loadCurrentUser() {
-      const { data: { data } } = await getCurrentUserAPI()
-      this.currentUser = data
+      if (this.user) {
+        const { data: { data } } = await getCurrentUserAPI()
+        this.currentUser = data
+      }
     }
   },
   created() {

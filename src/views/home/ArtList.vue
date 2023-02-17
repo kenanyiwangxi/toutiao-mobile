@@ -1,5 +1,5 @@
 <template>
-  <div class="article-list">
+  <div class="article-list" ref="article-list">
     <!-- 文章列表部分开始 -->
     <van-pull-refresh :disabled="finished" v-model="refreshing" @refresh="onRefresh" success-text="刷新成功">
       <van-list
@@ -20,6 +20,7 @@
 <script>
 import { getArtListAPI } from '@/api/article'
 import ArtItem from '@/views/home/ArtItem.vue'
+import { debounce } from 'lodash'
 
 export default {
   name: 'ArtList',
@@ -30,7 +31,8 @@ export default {
       timestamp: Date.now(), // 时间戳，初始的默认值为当前的时间戳
       loading: false, // 控制加载中的 loading 状态
       finished: false, // 控制加载结束的状态，当加载结束，不再触发加载更多
-      refreshing: false // 控制下滑刷新的 loading 状态
+      refreshing: false, // 控制下滑刷新的 loading 状态
+      scrollTop: 0 // 列表滚动到顶部的距离
     }
   },
   props: {
@@ -76,6 +78,20 @@ export default {
         this.onLoad()
       }
     }
+  },
+  mounted() {
+    const articleList = this.$refs['article-list']
+    articleList.addEventListener('scroll', debounce(() => {
+      this.scrollTop = articleList.scrollTop
+    }, 50))
+  },
+  // 缓存的组件被激活
+  activated() {
+    // 把记录到顶部的距离重新设置回去
+    this.$refs['article-list'].scrollTo(0, this.scrollTop)
+  },
+  // 缓存的组件失活
+  deactivated() {
   }
 }
 </script>

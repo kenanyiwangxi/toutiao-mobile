@@ -1,7 +1,7 @@
 <template>
   <div class="layout-container">
-    <!-- 子路由出口 -->
-    <keep-alive include="Home">
+    <!-- 子路由出口 或者说是二级路由 -->
+    <keep-alive>
       <router-view/>
     </keep-alive>
     <!-- 底部导航栏 -->
@@ -16,7 +16,10 @@
 
 <script>
 export default {
-  name: 'Login'
+  name: 'Layout',
+  mounted() {
+    this.$store.commit('addCachePage', 'Layout')
+  }
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="article-container">
     <!-- 导航栏部分开始 -->
-    <van-nav-bar left-arrow placeholder fixed @click-left="$router.back()">
+    <van-nav-bar left-arrow placeholder fixed @click-left="$router.push('/')">
       <template #title>
         <div v-show="isUserShow" v-if="articleDetails" class="header-title">
           <van-image
@@ -284,21 +284,22 @@ export default {
       }
       this.isFollowLoading = false
       // 更新视图
+      // console.log(data)
       this.articleDetails.is_followed = !this.articleDetails.is_followed
       this.$toast.success(`${this.articleDetails.is_followed ? '关注成功' : '取消关注'}`)
     },
-    onLike() {
+    async onLike() {
       this.$toast.loading({
         message: '操作中...',
         forbidClick: true // 禁止背景点击
       })
       if (this.articleDetails.attitude === 1) {
         // 已经喜欢，取消喜欢
-        deleteLikingsAPI(this.articleDetails.art_id)
+        await deleteLikingsAPI(this.articleDetails.art_id)
         this.articleDetails.attitude = -1
       } else {
         // 还未喜欢，添加喜欢
-        addLikingsAPI(this.articleDetails.art_id)
+        await addLikingsAPI(this.articleDetails.art_id)
         this.articleDetails.attitude = 1
       }
       this.$toast.success(`${this.articleDetails.attitude === 1 ? '点赞成功' : '取消点赞'}`)
@@ -349,14 +350,11 @@ export default {
     },
     // 滚动到评论列表区域
     scrollToComment() {
-      console.log(1)
       const wrapper = document.querySelector('.article-wrapper')
       // 1.当前滚动条位置
       const now = wrapper.scrollTop
-      console.log(now)
       // 2.目标位置(文章信息区域的高度)
       const dist = document.querySelector('.spaced').offsetTop
-      console.log(dist)
 
       // 3.实现滚动动画
       animate({

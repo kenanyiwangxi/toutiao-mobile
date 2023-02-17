@@ -1,13 +1,22 @@
 <template>
   <div class="myHeader-container">
-    <van-nav-bar :border="false" :title="title" left-arrow placeholder @click-left="$router.back()"/>
+    <van-nav-bar fixed :border="border" :title="title" left-arrow placeholder @click-left="$router.back()"/>
   </div>
 </template>
 
 <script>
 export default {
   name: 'MyHeader',
-  props: ['title']
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    border: {
+      type: Boolean,
+      default: false
+    }
+  }
 }
 </script>
 
